@@ -14,11 +14,9 @@
 #include <opencv/cv.h>
 #include <iterator>
 #include <algorithm>
-#include <glob.h>
 
 using namespace std;
 using namespace cv;
-
 
 int main()
 {
@@ -109,6 +107,9 @@ int main()
     double totalAvgErr = 0;
     calibrateCamera(world_points, image_points, img.size(), intrinsic, distCoeffs, rvecs, tvecs);
 
+    FileStorage f("Calibration.yaml", FileStorage::WRITE);
+    f << "intrinsic matrix" << intrinsic;
+    f << "Distortion coefficent" << distCoeffs;
 
     cout << "\n\n intrinsic:-\n" << intrinsic;
     cout << "\n\n distCoeffs:-\n" << distCoeffs;
@@ -137,6 +138,7 @@ int main()
         totalPoints += n;
     }
     double reproj_error = sqrt(totalErr/totalPoints);
+    f << "Reprojection Error" << reproj_error;
     cout << "\n\nReprojection error: \t\t" << reproj_error;
     cout << "\n\n\n";
 
@@ -161,6 +163,3 @@ int main()
 
     return 0;
 }
-
-
-
