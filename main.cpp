@@ -46,7 +46,6 @@ int main()
     int numOfPoints = numCornersHor*numCornersVer;
     Size boardSize = Size(numCornersHor,numCornersVer);
 
-
     /* DATA POINTS  */
     vector<vector<Point3f> > world_points;  // To store the world co-ordinates
     vector<vector<Point2f> > image_points;  // To store the image co-ordinates
@@ -58,7 +57,6 @@ int main()
             objects.push_back(Point3f((float)j * square_size, (float)i * square_size, 0));
     cout <<"\nThe world coordinates are at: \n" <<objects<< "\n";
     cout <<"\nTotal number of points in world: \t" <<objects.size();
-
 
     /*  DETERMINING THE POSITION OF CORNERS IN IMAGE FRAME  */
     while(success < numBoards)
@@ -98,7 +96,6 @@ int main()
         }
         count++;
     }
-
     /*  CALIBRATION OF CAMERA*/
     cout << "\n started calibration of camera........\n";
     Mat intrinsic = Mat(3, 3, CV_32FC1);
@@ -111,7 +108,6 @@ int main()
     double totalAvgErr = 0;
     calibrateCamera(world_points, image_points, img.size(), intrinsic, distCoeffs, rvecs, tvecs);
 
-
     cout << "\n\n intrinsic:-\n" << intrinsic;
     cout << "\n\n distCoeffs:-\n" << distCoeffs;
     copy(rvecs.begin(), rvecs.end(), ostream_iterator<Mat>(cout, "\n\n Rotation vector:-\n "));
@@ -120,8 +116,6 @@ int main()
     cout << "\n board_height:\t" << board_height;
     cout << "\n square_size:\t" << square_size;
     printf("\n\nDone Calibration.........!\n\n");
-
-
 
     /*  REPROJECTION ERROR  */
     vector< Point2f > imagePoints2;
@@ -143,8 +137,4 @@ int main()
     cout << "\n\n\n";
     return 0;
 
-
 }
-
-
-
