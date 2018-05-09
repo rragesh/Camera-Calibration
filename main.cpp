@@ -31,6 +31,8 @@ int main()
     int board_height = numCornersVer*square_size;
     int board_width = numCornersHor*square_size;
     Mat img, gray;
+    int numOfPoints = numCornersHor*numCornersVer;
+    Size boardSize = Size(numCornersHor,numCornersVer);
     //        cout << "Enter number of horizontal corners: \t";
     //        cin >> numCornersHor;
 
@@ -42,10 +44,7 @@ int main()
 
     //        cout << "Number of corner points:\t" << numOfPoints;
     //        cout << "\nSize of board: \t" << board_size <<"\n";
-
-    int numOfPoints = numCornersHor*numCornersVer;
-    Size boardSize = Size(numCornersHor,numCornersVer);
-
+    
     /* DATA POINTS  */
     vector<vector<Point3f> > world_points;  // To store the world co-ordinates
     vector<vector<Point2f> > image_points;  // To store the image co-ordinates
