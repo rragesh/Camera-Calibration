@@ -24,15 +24,13 @@ int main()
 {
     int count = 0;
     int success = 0;
-    int numBoards = 9;
+    int numBoards = 5; //9 images for pinhole //5 images for fish eye
     int numCornersHor = 8;
     int numCornersVer = 5;
     float square_size = 24.23;
     int board_height = numCornersVer*square_size;
     int board_width = numCornersHor*square_size;
     Mat img, gray;
-    int numOfPoints = numCornersHor*numCornersVer;
-    Size boardSize = Size(numCornersHor,numCornersVer);
     //        cout << "Enter number of horizontal corners: \t";
     //        cin >> numCornersHor;
 
@@ -44,7 +42,11 @@ int main()
 
     //        cout << "Number of corner points:\t" << numOfPoints;
     //        cout << "\nSize of board: \t" << board_size <<"\n";
-    
+
+    int numOfPoints = numCornersHor*numCornersVer;
+    Size boardSize = Size(numCornersHor,numCornersVer);
+
+
     /* DATA POINTS  */
     vector<vector<Point3f> > world_points;  // To store the world co-ordinates
     vector<vector<Point2f> > image_points;  // To store the image co-ordinates
@@ -57,19 +59,18 @@ int main()
     cout <<"\nThe world coordinates are at: \n" <<objects<< "\n";
     cout <<"\nTotal number of points in world: \t" <<objects.size();
 
+
     /*  DETERMINING THE POSITION OF CORNERS IN IMAGE FRAME  */
     while(success < numBoards)
     {
-        cv::String  folder = "/home/ragesh/C++ /calibration_laptop/images/*.jpg";
-        std::vector<cv::String> filename;
+        cv::String  folder = "/home/ragesh/C++ /calibration_laptop/fish_images/*.jpg";
+        std::vector<cv::String> filenames;
+        glob(folder, filenames, false);
+        if(count < filenames.size())
 
-        glob(folder, filename, false);
-
-        //glob(folder.c_str(), filename, false);
-        if(count < filename.size())
         {
 
-            img = imread(filename[count]);
+            img = imread(filenames[count]);
             if(img.empty())
             {
                 cout << "\nimage loading failed.....!"<<"\n";
@@ -95,6 +96,7 @@ int main()
         }
         count++;
     }
+
     /*  CALIBRATION OF CAMERA*/
     cout << "\n started calibration of camera........\n";
     Mat intrinsic = Mat(3, 3, CV_32FC1);
@@ -107,6 +109,7 @@ int main()
     double totalAvgErr = 0;
     calibrateCamera(world_points, image_points, img.size(), intrinsic, distCoeffs, rvecs, tvecs);
 
+
     cout << "\n\n intrinsic:-\n" << intrinsic;
     cout << "\n\n distCoeffs:-\n" << distCoeffs;
     copy(rvecs.begin(), rvecs.end(), ostream_iterator<Mat>(cout, "\n\n Rotation vector:-\n "));
@@ -115,6 +118,8 @@ int main()
     cout << "\n board_height:\t" << board_height;
     cout << "\n square_size:\t" << square_size;
     printf("\n\nDone Calibration.........!\n\n");
+
+
 
     /*  REPROJECTION ERROR  */
     vector< Point2f > imagePoints2;
@@ -134,6 +139,28 @@ int main()
     double reproj_error = sqrt(totalErr/totalPoints);
     cout << "\n\nReprojection error: \t\t" << reproj_error;
     cout << "\n\n\n";
-    return 0;
 
+
+    /* UNDISTORTED */
+    cv::String  folder = "/home/ragesh/C++ /calibration_laptop/fish_images/*.jpg";
+    std::vector<cv::String> filenames;
+    glob(folder, filenames, false);
+    Mat imageUndistorted, image;
+    count = 0;
+    while(count<5)
+    {
+        image = imread(filenames[count]);;
+        undistort(image, imageUndistorted, intrinsic, distCoeffs);
+
+        imshow("Distorted Image", image);
+        imshow("Undistorted Image", imageUndistorted);
+        count ++;
+        waitKey(0);
+
+    }
+
+    return 0;
 }
+
+
+
